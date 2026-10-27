@@ -1,0 +1,27 @@
+{
+	"format": 1,
+	"id": "dim.material-you",
+	"name": "Material You",
+	"description": "Follows your Android system Material You colors automatically.",
+	"icon": "PaintPaletteIcon",
+	"author": "dim (https://github.com/dim-ghub \"GitHub\") (https://dim.contact \"Website\")",
+	"version": "1.0.0",
+	"dependencies": {
+		"valenced.api": {
+			"version": ">=1 <2"
+		},
+		"discord": {
+			"version": "*"
+		},
+		"valenced.api.themes": {
+			"version": "*"
+		}
+	},
+	"dist": {
+		"script": "index.js",
+		"android": {
+			"path": "plugin.jar",
+			"class": "dim.materialyou.MaterialYou"
+		}
+	}
+}

@@ -1,0 +1,63 @@
+# A plugin is released when the published pool doesn't have `<id>@<version>.zip` for its manifest version.
+# The pool contains all relevant data. Git tags and GitHub releases are created for changelogs only.
+
+name: Release plugins
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: publish-pool
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  # Branch holding the pool. Set the POOL_BRANCH repository variable to move it.
+  POOL_BRANCH: ${{ vars.POOL_BRANCH }}
+  # Set the PAGES_BASE_URL repository variable when the pool is served from a custom domain.
+  PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL }}
+  POOL_REMOTE: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+  PLAN: ${{ github.workspace }}/releases.json
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Existing tags, so a re-run doesn't try to recreate one.
+
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - run: bun install
+
+      - name: Check out the published pool
+        run: .github/scripts/checkout-pool.sh
+
+      - name: Plan releases
+        id: plan
+        run: .github/scripts/plan-releases.sh
+
+      - name: Build plugins
+        if: steps.plan.outputs.count != '0'
+        run: ./gradlew --no-daemon packageAllPlugins
+        env:
+          GITHUB_TOKEN: ${{ secrets.READ_PACKAGES_TOKEN }} # For Gradle to download the API dependency.
+
+      - name: Publish to the pool
+        if: steps.plan.outputs.count != '0'
+        run: .github/scripts/publish-pool.sh
+
+      - name: Tag and write changelogs
+        if: steps.plan.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: .github/scripts/tag-releases.sh

@@ -1,0 +1,40 @@
+# Regenerates `index.json` from the artifacts already in the pool and commits it if it changed.
+#
+# Use it after editing `repo.config.json` channel overrides, or after deleting an artifact to unpublish it.
+# Automated releases are done regardless by the "Release plugins" workflow. This is for manual intervention only.
+
+name: Publish repository index
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: publish-pool
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  # Branch holding the pool. Set the POOL_BRANCH repository variable to move it.
+  POOL_BRANCH: ${{ vars.POOL_BRANCH }}
+  # Set the PAGES_BASE_URL repository variable when the pool is served from a custom domain.
+  PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL }}
+  POOL_REMOTE: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+
+      - run: bun install
+
+      - name: Check out the published pool
+        env:
+          REQUIRE_POOL: 1 # There is nothing to regenerate from without one.
+        run: .github/scripts/checkout-pool.sh
+
+      - name: Regenerate and publish index.json
+        run: .github/scripts/regenerate-index.sh

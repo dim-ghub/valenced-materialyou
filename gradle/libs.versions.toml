@@ -1,0 +1,21 @@
+[versions]
+agp = "9.1.1"
+kotlin = "2.4.10"
+
+coroutines = "1.11.0"
+xposed = "82"
+valencedApi = "1.0.0"
+
+compileSdk = "36"
+minSdk = "24"
+targetSdk = "36"
+javaVersion = "25"
+
+[libraries]
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+xposed-api = { module = "de.robv.android.xposed:api", version.ref = "xposed" }
+valenced-api = { module = "app.valenced:api", version.ref = "valencedApi" }
+
+[plugins]
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

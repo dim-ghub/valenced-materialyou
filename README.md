@@ -1,0 +1,67 @@
+# Material You for Valenced
+
+A [Valenced](https://github.com/Valenced/valenced) theme that colors Discord with your Android
+**Material You** palette, the one generated from your wallpaper or picked in *Wallpaper & style*.
+
+It's automatic: change your wallpaper or system colors, come back to Discord, and the theme follows.
+
+## Themes
+
+Both appear under **Material You** in Valenced's theme picker:
+
+| Theme | Surfaces |
+| --- | --- |
+| **Material You** | Neutral surfaces, accent colors from your palette (closest to stock Material 3) |
+| **Material You (Tinted)** | Surfaces tinted with your accent, like Android's own settings app |
+
+Each works with every Discord appearance: **Light**, **Dark**, **Darker** and **Midnight** (AMOLED black).
+
+Requires **Android 12 or later**. Older versions have no system palette, so the theme keeps Discord's colors.
+
+## How it works
+
+The theme has two halves:
+
+- **Native** (`themes/material-you/src/main`): a small Kotlin plugin registers
+  `dim.material-you.getPalettes`, which reads the five system tonal palettes
+  (`system_accent1/2/3_*`, `system_neutral1/2_*`) from Android's resources.
+- **JS** (`themes/material-you/js/index.ts`): registers the themes with the Themes API and builds colors:
+  - Discord's raw palette is **re-toned**: every `PRIMARY_*`/`NEUTRAL_*` color is replaced by the system
+    neutral color of the same lightness, and every `BRAND_*` color by the system accent of the same
+    lightness. Anything derived from them follows along.
+  - Key semantic colors (backgrounds, text, icons, borders, buttons, links, mentions) are set to
+    [Material 3 color roles](https://m3.material.io/styles/color/roles) at the right tones for each
+    Discord appearance.
+  - When Discord returns to the foreground, the palettes are read again. If they changed, the theme
+    re-applies itself.
+
+## Install
+
+1. Build the ZIP (see below), or download it from the **Build** workflow's artifacts.
+2. Copy `build/dist/dim.material-you@<version>.zip` to your phone and install it in
+   **Settings > Valenced > Plugins**, or serve it with `bun run serve` and add it as a repository.
+3. Make sure **Themes API** and **Themes** are enabled, then pick **Material You** in the theme picker.
+
+## Build
+
+This repository is based on the [Valenced plugin template](https://github.com/Valenced/valenced-plugin-template),
+so the same prerequisites apply: JDK 25+, the Android SDK (platform 36 and build-tools), Bun or Node,
+and a GitHub token with `read:packages` in `~/.gradle/gradle.properties`:
+
+```properties
+GitHubPackagesUsername=YOUR_GITHUB_USERNAME
+GitHubPackagesPassword=YOUR_PERSONAL_ACCESS_TOKEN
+```
+
+```sh
+bun install
+./gradlew packageMaterialYou   # -> build/dist/dim.material-you@1.0.0.zip
+```
+
+For CI, add the same token as the `READ_PACKAGES_TOKEN` repository secret.
+
+## Tweaking
+
+The token-to-role mapping lives in `SemanticRoles` in `js/index.ts`, and the surface tones per Discord
+appearance in `SurfaceTones`. Token names that don't exist in your Discord version are ignored, so
+adding names is safe.
