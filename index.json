@@ -1,8 +1,32 @@
 {
   "format": 1,
-  "name": "Material You",
-  "description": "A Valenced theme that follows your Android Material You colors.",
+  "name": "dim's Valenced plugins",
+  "description": "Material You theme, TapTap and Chat Bubbles for Valenced.",
   "plugins": {
+    "dim.chat-bubbles": {
+      "name": "Chat Bubbles",
+      "description": "Shows chat messages in bubbles, with your own messages in your accent color.",
+      "author": "dim (https://github.com/dim-ghub \"GitHub\") (https://dim.contact \"Website\")",
+      "icon": "ChatIcon",
+      "channels": {
+        "latest": "1.0.0"
+      },
+      "versions": {
+        "1.0.0": {
+          "url": "https://dim-ghub.github.io/valenced-materialyou/pool/dim.chat-bubbles@1.0.0.zip",
+          "sha256": "d68a8ccad104887800b2a2e9cbd1b8cc2b4c4d2fea33f67c5ebdcb41e1b27f2b",
+          "size": 11630,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": ">=352.2"
+            }
+          }
+        }
+      }
+    },
     "dim.material-you": {
       "name": "Material You",
       "description": "Follows your Android system Material You colors automatically, with system emoji, system font and Material Symbols icons.",
@@ -121,6 +145,30 @@
             },
             "valenced.api.themes": {
               "version": "*"
+            }
+          }
+        }
+      }
+    },
+    "dim.taptap": {
+      "name": "TapTap",
+      "description": "Double tap your own message to edit it, or someone else's to reply.",
+      "author": "dim (https://github.com/dim-ghub \"GitHub\") (https://dim.contact \"Website\")",
+      "icon": "ReactionIcon",
+      "channels": {
+        "latest": "1.0.0"
+      },
+      "versions": {
+        "1.0.0": {
+          "url": "https://dim-ghub.github.io/valenced-materialyou/pool/dim.taptap@1.0.0.zip",
+          "sha256": "8fe57339654b4b36addcdf420a7a1eea0c2e4061e0d0e916e603497e15f39f2f",
+          "size": 9800,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": ">=352.2"
             }
           }
         }
