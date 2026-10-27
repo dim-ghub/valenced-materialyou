@@ -2,10 +2,10 @@
 	"format": 1,
 	"id": "dim.material-you",
 	"name": "Material You",
-	"description": "Follows your Android system Material You colors automatically.",
+	"description": "Follows your Android system Material You colors automatically, with system emoji.",
 	"icon": "PaintPaletteIcon",
 	"author": "dim (https://github.com/dim-ghub \"GitHub\") (https://dim.contact \"Website\")",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"dependencies": {
 		"valenced.api": {
 			"version": ">=1 <2"

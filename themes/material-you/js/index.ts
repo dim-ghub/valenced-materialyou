@@ -328,6 +328,12 @@ export default plugin({
 		// re-registering re-applies the theme if it's selected
 		registerThemes(themes)
 
+		themes.registerEmojiPack(GroupId, 'system', {
+			name: 'System',
+			description: "Your device's emoji",
+			font: 'system',
+		})
+
 		// wallpaper/palette may have changed while backgrounded
 		const subscription = AppState.addEventListener('change', state => {
 			if (state !== 'active') return

@@ -14,7 +14,10 @@ Both appear under **Material You** in Valenced's theme picker:
 | **Material You** | Neutral surfaces, accent colors from your palette (closest to stock Material 3) |
 | **Material You (Tinted)** | Surfaces tinted with your accent, like Android's own settings app |
 
-Each works with every Discord appearance: **Light**, **Dark**, **Darker** and **Midnight** (AMOLED black).
+There's also a **System** emoji pack under **Material You** in the emoji picker, which swaps Discord's
+emoji for your phone's own emoji font.
+
+Each theme works with every Discord appearance: **Light**, **Dark**, **Darker** and **Midnight** (AMOLED black).
 
 Requires **Android 12 or later**. Older versions have no system palette, so the theme keeps Discord's colors.
 
