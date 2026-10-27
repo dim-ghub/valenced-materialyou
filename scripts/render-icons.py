@@ -1,7 +1,8 @@
 """Renders themes/material-you/icons.json to PNGs with Material Symbols Rounded.
 
-Values are a symbol name, {"symbol": ..., "fill": 1} for the filled style, or null for an empty
-image (the second layer of discord's two-layer icons).
+Values are a symbol name, {"symbol": ..., "fill": 1, "color": "#rrggbb"} for the filled style or
+an icon discord doesn't tint, or null for an empty image (the second layer of discord's two-layer
+icons).
 
     python3 scripts/render-icons.py path/to/MaterialSymbolsRounded[FILL,GRAD,opsz,wght].ttf
 
@@ -56,6 +57,6 @@ for name, value in json.loads((theme / "icons.json").read_text()).items():
             (0, -top),
             chr(int(codepoints[value["symbol"]], 16)),
             font=fonts[value.get("fill", 0)],
-            fill="white",
+            fill=value.get("color", "white"),
         )
     image.save(out / f"{name}.png", optimize=True)

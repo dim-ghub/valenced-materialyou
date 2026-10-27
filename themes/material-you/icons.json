@@ -501,6 +501,7 @@
 	"maximize": "open_in_full",
 	"member_list_icon": "group",
 	"mic": "mic",
+	"report": "trending_up",
 	"screenshare": "screen_share",
 	"search-icon": "search",
 	"send_message_32px": "send",
@@ -509,6 +510,10 @@
 	"speaker": "volume_up",
 	"stack-nav-back": "arrow_back",
 	"stack-nav-close": "close",
+	"stream": {
+		"symbol": "desktop_windows",
+		"color": "#4e5058"
+	},
 	"upload": "upload",
 	"video": "videocam",
 	"voice_bar_bluetooth": "bluetooth_audio",
