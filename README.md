@@ -29,9 +29,10 @@ The theme has two halves:
   - Discord's raw palette is **re-toned**: every `PRIMARY_*`/`NEUTRAL_*` color is replaced by the system
     neutral color of the same lightness, and every `BRAND_*` color by the system accent of the same
     lightness. Anything derived from them follows along.
-  - Key semantic colors (backgrounds, text, icons, borders, buttons, links, mentions) are set to
-    [Material 3 color roles](https://m3.material.io/styles/color/roles) at the right tones for each
-    Discord appearance.
+  - Backgrounds come entirely from that re-toning, so they keep Discord's own light/dark levels and
+    anything that matches in stock Discord still matches.
+  - Text, icons, borders, buttons, links and mentions are set to
+    [Material 3 color roles](https://m3.material.io/styles/color/roles) for each Discord appearance.
   - When Discord returns to the foreground, the palettes are read again. If they changed, the theme
     re-applies itself.
 
@@ -62,6 +63,5 @@ For CI, add the same token as the `READ_PACKAGES_TOKEN` repository secret.
 
 ## Tweaking
 
-The token-to-role mapping lives in `SemanticRoles` in `js/index.ts`, and the surface tones per Discord
-appearance in `SurfaceTones`. Token names that don't exist in your Discord version are ignored, so
+The token-to-role mapping lives in `SemanticRoles` in `js/index.ts`. Token names that don't exist in your Discord version are ignored, so
 adding names is safe.

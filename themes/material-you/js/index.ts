@@ -60,10 +60,18 @@ function at(palette: TonalPalette, tone: number) {
 		if (hi.tone < tone) continue
 
 		const lo = palette[i - 1]!
-		const t = (tone - lo.tone) / (hi.tone - lo.tone || 1)
-		return toHex(
-			[0, 1, 2].map(c => lo.rgb[c]! + (hi.rgb[c]! - lo.rgb[c]!) * t) as Rgb,
-		)
+		const mix = (t: number) =>
+			[0, 1, 2].map(c => lo.rgb[c]! + (hi.rgb[c]! - lo.rgb[c]!) * t) as Rgb
+
+		// rgb blends aren't linear in tone, so search for the right mix
+		let min = 0
+		let max = 1
+		for (let j = 0; j < 16; j++) {
+			const t = (min + max) / 2
+			if (toneOf(mix(t)) < tone) min = t
+			else max = t
+		}
+		return toHex(mix((min + max) / 2))
 	}
 
 	return toHex(last.rgb)
@@ -79,13 +87,6 @@ function withAlpha(hex: string, alpha: number) {
 }
 
 interface Roles {
-	lowest: string
-	lower: string
-	low: string
-	high: string
-	higher: string
-	highest: string
-
 	onSurface: string
 	onSurfaceVariant: string
 	outline: string
@@ -100,35 +101,13 @@ interface Roles {
 	tertiary: string
 }
 
-// lowest -> highest
-const SurfaceTones: Record<
-	ThemeBase,
-	[number, number, number, number, number, number]
-> = {
-	dark: [4, 6, 10, 12, 17, 22],
-	darker: [2, 4, 6, 10, 14, 18],
-	midnight: [0, 0, 4, 6, 10, 14],
-	light: [90, 94, 96, 98, 99, 100],
-}
-
 interface Variant {
 	surfaces: PaletteName
 }
 
-function rolesOf(
-	base: ThemeBase,
-	p: Record<PaletteName, TonalPalette>,
-	{ surfaces }: Variant,
-): Roles {
-	const [lowest, lower, low, high, higher, highest] = SurfaceTones[base].map(
-		tone => at(p[surfaces], tone),
-	) as [string, string, string, string, string, string]
-
-	const roles = { lowest, lower, low, high, higher, highest }
-
+function rolesOf(base: ThemeBase, p: Record<PaletteName, TonalPalette>): Roles {
 	if (base === 'light')
 		return {
-			...roles,
 			onSurface: at(p.neutral1, 10),
 			onSurfaceVariant: at(p.neutral2, 30),
 			outline: at(p.neutral2, 50),
@@ -143,7 +122,6 @@ function rolesOf(
 		}
 
 	return {
-		...roles,
 		onSurface: at(p.neutral1, 90),
 		onSurfaceVariant: at(p.neutral2, 80),
 		outline: at(p.neutral2, 60),
@@ -158,55 +136,10 @@ function rolesOf(
 	}
 }
 
-// unknown names are just ignored, so old and new token names can both live here
+// unknown names are just ignored, so old and new token names can both live here.
+// backgrounds aren't listed on purpose: they come from the re-toned raw colors, which keeps
+// surfaces that match in stock discord matching here too
 const SemanticRoles: Partial<Record<keyof Roles, string[]>> = {
-	lowest: [
-		'BACKGROUND_BASE_LOWEST',
-		'BACKGROUND_TERTIARY',
-		'BG_BASE_TERTIARY',
-		'HOME_BACKGROUND',
-	],
-	lower: [
-		'BACKGROUND_BASE_LOWER',
-		'BACKGROUND_PRIMARY',
-		'BACKGROUND_MOBILE_PRIMARY',
-		'BG_BASE_PRIMARY',
-		'CHAT_BACKGROUND',
-	],
-	low: [
-		'BACKGROUND_BASE_LOW',
-		'BACKGROUND_SECONDARY',
-		'BACKGROUND_SECONDARY_ALT',
-		'BACKGROUND_MOBILE_SECONDARY',
-		'BG_BASE_SECONDARY',
-		'CHANNEL_BACKGROUND_DEFAULT',
-		'PANEL_BG',
-		'MOBILE_KEYBOARD_PANEL_BACKGROUND',
-	],
-	high: [
-		'BACKGROUND_SURFACE_HIGH',
-		'BACKGROUND_CODE',
-		'BG_SURFACE_RAISED',
-		'CARD_BACKGROUND_DEFAULT',
-		'CARD_PRIMARY_BG',
-		'CHAT_INPUT_BACKGROUND',
-		'CHAT_INPUT_CONTAINER_BACKGROUND',
-		'INPUT_BACKGROUND_DEFAULT',
-		'MOBILE_CHATINPUT_BACKGROUND_DEFAULT',
-		'MOBILE_FLOATINGBAR_BACKGROUND',
-	],
-	higher: [
-		'BACKGROUND_SURFACE_HIGHER',
-		'BACKGROUND_NESTED_FLOATING',
-		'CARD_SECONDARY_BG',
-		'MOBILE_FLOATINGBAR_BACKGROUND_HIGHER',
-	],
-	highest: [
-		'BACKGROUND_SURFACE_HIGHEST',
-		'BACKGROUND_FLOATING',
-		'BG_SURFACE_OVERLAY',
-		'MODAL_BACKGROUND',
-	],
 	onSurface: [
 		'TEXT_DEFAULT',
 		'TEXT_NORMAL',
@@ -286,10 +219,8 @@ const TranslucentSemanticRoles: Record<string, [keyof Roles, number]> = {
 	INFO_BOX_BACKGROUND: ['primary', 0.1],
 }
 
-const RawPalettes: [RegExp, PaletteName][] = [
-	[/^(PRIMARY|NEUTRAL)_\d+$/, 'neutral1'],
-	[/^(BRAND|BLURPLE)_\d+$/, 'accent1'],
-]
+const NeutralRaw = /^(PRIMARY|NEUTRAL)_\d+$/
+const BrandRaw = /^(BRAND|BLURPLE)_\d+$/
 
 const Bases: ThemeBase[] = ['dark', 'darker', 'midnight', 'light']
 
@@ -308,7 +239,11 @@ function buildColors(
 	// swap discord's grays/blurple for system colors of the same tone
 	const raw: Record<string, string> = {}
 	for (const [name, value] of Object.entries(discord.raw)) {
-		const palette = RawPalettes.find(([pattern]) => pattern.test(name))?.[1]
+		const palette = NeutralRaw.test(name)
+			? variant.surfaces
+			: BrandRaw.test(name)
+				? 'accent1'
+				: undefined
 		if (!palette || !/^#[0-9a-f]{6}/i.test(value)) continue
 
 		raw[name] = at(p[palette], toneOf(parseHex(value))) + value.slice(7)
@@ -316,7 +251,7 @@ function buildColors(
 
 	const semantic: NonNullable<ThemeColors['semantic']> = {}
 	for (const base of Bases) {
-		const roles = rolesOf(base, p, variant)
+		const roles = rolesOf(base, p)
 		const colors: Record<string, string> = {}
 
 		for (const [role, names] of Object.entries(SemanticRoles))
