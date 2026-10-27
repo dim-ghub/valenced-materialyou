@@ -5,11 +5,11 @@
   "plugins": {
     "dim.material-you": {
       "name": "Material You",
-      "description": "Follows your Android system Material You colors automatically.",
+      "description": "Follows your Android system Material You colors automatically, with system emoji.",
       "author": "dim (https://github.com/dim-ghub \"GitHub\") (https://dim.contact \"Website\")",
       "icon": "PaintPaletteIcon",
       "channels": {
-        "latest": "1.0.1"
+        "latest": "1.0.2"
       },
       "versions": {
         "1.0.0": {
@@ -32,6 +32,22 @@
           "url": "https://dim-ghub.github.io/valenced-materialyou/pool/dim.material-you@1.0.1.zip",
           "sha256": "0b2ced86f0bd08a74cf6d3d6d7cd8d4b8ac92f52fba0ece0620796b86349eafb",
           "size": 6255,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            },
+            "valenced.api.themes": {
+              "version": "*"
+            }
+          }
+        },
+        "1.0.2": {
+          "url": "https://dim-ghub.github.io/valenced-materialyou/pool/dim.material-you@1.0.2.zip",
+          "sha256": "cc50d8d519c312da38a974fd8421c095fa3e482a5fcae7811ecf173d89492c6c",
+          "size": 6308,
           "dependencies": {
             "valenced.api": {
               "version": ">=1 <2"
