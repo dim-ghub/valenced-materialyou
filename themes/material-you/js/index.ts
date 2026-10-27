@@ -2,6 +2,7 @@
 
 import { callNativeMethodSync } from '@valenced/modules/native'
 import { AppState } from 'react-native'
+import iconSymbols from '../icons.json'
 import type {
 	DiscordColors,
 	ThemeBase,
@@ -317,6 +318,8 @@ function registerThemes(themes: ThemesApi) {
 		})
 }
 
+const SansStyles = ['Normal', 'Medium', 'Semibold', 'Bold', 'ExtraBold']
+
 export default plugin({
 	start({ themes, cleanup }) {
 		themes.registerGroup(GroupId, {
@@ -332,6 +335,26 @@ export default plugin({
 			name: 'System',
 			description: "Your device's emoji",
 			font: 'system',
+		})
+
+		themes.registerFontPack(GroupId, 'system', {
+			name: 'System',
+			description: "Your device's font",
+			families: Object.fromEntries(
+				SansStyles.map(style => [`ggsans-${style}`, 'system-ui']),
+			),
+		})
+
+		// pngs are rendered from icons.json by scripts/render-icons.py
+		themes.registerIconPack(GroupId, 'symbols', {
+			name: 'Material Symbols',
+			description: 'Closest Material Symbols for Discord icons',
+			icons: Object.fromEntries(
+				Object.keys(iconSymbols).map(name => [
+					name,
+					`assets/icons/${name}.png`,
+				]),
+			),
 		})
 
 		// wallpaper/palette may have changed while backgrounded

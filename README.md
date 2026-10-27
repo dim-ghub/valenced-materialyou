@@ -14,8 +14,13 @@ Both appear under **Material You** in Valenced's theme picker:
 | **Material You** | Neutral surfaces, accent colors from your palette (closest to stock Material 3) |
 | **Material You (Tinted)** | Surfaces tinted with your accent, like Android's own settings app |
 
-There's also a **System** emoji pack under **Material You** in the emoji picker, which swaps Discord's
-emoji for your phone's own emoji font.
+It also comes with packs you pick separately, all under **Material You**:
+
+| Pack | What it does |
+| --- | --- |
+| **System** emoji | Swaps Discord's emoji for your phone's own emoji font |
+| **System** font | Swaps gg sans for your phone's font |
+| **Material Symbols** icons | Swaps Discord's icons for the closest [Material Symbols](https://fonts.google.com/icons) (Rounded) |
 
 Each theme works with every Discord appearance: **Light**, **Dark**, **Darker** and **Midnight** (AMOLED black).
 
@@ -63,6 +68,19 @@ bun install
 ```
 
 For CI, add the same token as the `READ_PACKAGES_TOKEN` repository secret.
+
+## Icons
+
+`themes/material-you/icons.json` maps Discord icon names to Material Symbols names. Names Discord
+doesn't have are ignored. After editing it, re-render the PNGs (needs Pillow):
+
+```sh
+python3 scripts/render-icons.py "path/to/MaterialSymbolsRounded[FILL,GRAD,opsz,wght].ttf"
+```
+
+The font and its `.codepoints` file are in
+[google/material-design-icons](https://github.com/google/material-design-icons/tree/master/variablefont).
+Material Symbols are licensed under Apache 2.0, see `themes/material-you/assets/icons/LICENSE`.
 
 ## Tweaking
 
