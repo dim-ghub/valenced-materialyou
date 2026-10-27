@@ -9,7 +9,7 @@
 		"plan-releases": "valenced-plugin plan-releases --plugins-dir plugins --plugins-dir themes",
 		"serve": "valenced-plugin serve",
 		"lint": "biome check",
-		"lint:types": "tsc -b themes/*/tsconfig.json"
+		"lint:types": "tsc -b plugins/*/tsconfig.json themes/*/tsconfig.json"
 	},
 	"dependencies": {
 		"@revenge-mod/devtools-client": "^1.4.0",

@@ -1,4 +1,26 @@
-# Material You for Valenced
+# dim's Valenced plugins
+
+| Plugin | What it does |
+| --- | --- |
+| [Material You](#material-you) | Colors Discord with your Android Material You palette |
+| [TapTap](#taptap) | Double tap your own message to edit it, or someone else's to reply |
+| [Chat Bubbles](#chat-bubbles) | Shows messages in bubbles, your own in your accent color |
+
+## TapTap
+
+A port of Aliucord's TapTap. Double tap one of your messages to start editing it, or anyone else's
+to reply to them. Ephemeral and system messages are skipped.
+
+The native half (`plugins/taptap/src`) watches touches on Discord's message views and spots double
+taps; the JS half starts the edit or the reply with Discord's own actions.
+
+## Chat Bubbles
+
+A take on Aliucord's Chat Bubbles. Each message gets a rounded bubble behind its name and content.
+Your own messages use your theme's brand color, everyone else's a raised surface color, so with
+Material You they follow your system palette.
+
+# Material You
 
 A [Valenced](https://github.com/Valenced/valenced) theme that colors Discord with your Android
 **Material You** palette, the one generated from your wallpaper or picked in *Wallpaper & style*.

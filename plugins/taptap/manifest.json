@@ -1,0 +1,24 @@
+{
+	"format": 1,
+	"id": "dim.taptap",
+	"name": "TapTap",
+	"description": "Double tap your own message to edit it, or someone else's to reply.",
+	"icon": "ReactionIcon",
+	"author": "dim (https://github.com/dim-ghub \"GitHub\") (https://dim.contact \"Website\")",
+	"version": "1.0.0",
+	"dependencies": {
+		"valenced.api": {
+			"version": ">=1 <2"
+		},
+		"discord": {
+			"version": ">=352.2"
+		}
+	},
+	"dist": {
+		"script": "index.js",
+		"android": {
+			"path": "plugin.jar",
+			"class": "dim.taptap.TapTap"
+		}
+	}
+}
