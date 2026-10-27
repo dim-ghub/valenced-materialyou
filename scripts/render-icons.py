@@ -1,5 +1,8 @@
 """Renders themes/material-you/icons.json to PNGs with Material Symbols Rounded.
 
+Values are a symbol name, {"symbol": ..., "fill": 1} for the filled style, or null for an empty
+image (the second layer of discord's two-layer icons).
+
     python3 scripts/render-icons.py path/to/MaterialSymbolsRounded[FILL,GRAD,opsz,wght].ttf
 
 The font and its .codepoints file are in google/material-design-icons under variablefont/.
@@ -25,20 +28,34 @@ codepoints = dict(
     for line in font_path.with_suffix(".codepoints").read_text().splitlines()
 )
 
-font = ImageFont.truetype(str(font_path), SIZE)
-font.set_variation_by_axes(
-    [AXES[axis["name"].decode()] for axis in font.get_variation_axes()]
-)
+
+
+def load_font(fill):
+    font = ImageFont.truetype(str(font_path), SIZE)
+    axes = {**AXES, "Fill": fill}
+    font.set_variation_by_axes(
+        [axes[axis["name"].decode()] for axis in font.get_variation_axes()]
+    )
+    return font
+
+
+fonts = {0: load_font(0), 1: load_font(1)}
 # top of the em box, so glyphs keep their position inside the 24dp grid
-top = font.getmetrics()[0] - SIZE
+top = fonts[0].getmetrics()[0] - SIZE
 
 out.mkdir(parents=True, exist_ok=True)
 for old in out.glob("*.png"):
     old.unlink()
 
-for name, symbol in json.loads((theme / "icons.json").read_text()).items():
+for name, value in json.loads((theme / "icons.json").read_text()).items():
     image = Image.new("RGBA", (SIZE, SIZE))
-    ImageDraw.Draw(image).text(
-        (0, -top), chr(int(codepoints[symbol], 16)), font=font, fill="white"
-    )
+    if value is not None:
+        if isinstance(value, str):
+            value = {"symbol": value}
+        ImageDraw.Draw(image).text(
+            (0, -top),
+            chr(int(codepoints[value["symbol"]], 16)),
+            font=fonts[value.get("fill", 0)],
+            fill="white",
+        )
     image.save(out / f"{name}.png", optimize=True)

@@ -71,7 +71,8 @@ For CI, add the same token as the `READ_PACKAGES_TOKEN` repository secret.
 
 ## Icons
 
-`themes/material-you/icons.json` maps Discord icon names to Material Symbols names. Names Discord
+`themes/material-you/icons.json` maps Discord icon names to Material Symbols names: a symbol name,
+`{"symbol": ..., "fill": 1}` for the filled style, or `null` for an empty image. Names Discord
 doesn't have are ignored. After editing it, re-render the PNGs (needs Pillow):
 
 ```sh
