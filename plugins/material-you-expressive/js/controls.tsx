@@ -10,6 +10,9 @@ interface SwitchProps extends ViewProps {
 	disabled?: boolean
 }
 
+// not Animated.View: the plugin bundler rewrites `View` there too, since it's also imported
+const AnimatedView = Animated.createAnimatedComponent(View)
+
 const Track = { width: 52, height: 32, border: 2 }
 // inside the border
 const Inner = {
@@ -70,7 +73,7 @@ export function M3Switch({
 			onPress={() => onValueChange?.(!value)}
 			style={[{ opacity: disabled ? 0.38 : 1 }, style]}
 		>
-			<Animated.View
+			<AnimatedView
 				style={[
 					styles.track,
 					{
@@ -85,7 +88,7 @@ export function M3Switch({
 					},
 				]}
 			>
-				<Animated.View
+				<AnimatedView
 					style={[
 						styles.thumb,
 						{
@@ -100,14 +103,14 @@ export function M3Switch({
 						},
 					]}
 				>
-					<Animated.View style={{ opacity: progress }}>
+					<AnimatedView style={{ opacity: progress }}>
 						<Image
 							source={getAssetIdByName('CheckmarkSmallIcon')}
 							style={[styles.check, { tintColor: primary }]}
 						/>
-					</Animated.View>
-				</Animated.View>
-			</Animated.View>
+					</AnimatedView>
+				</AnimatedView>
+			</AnimatedView>
 		</Pressable>
 	)
 }
