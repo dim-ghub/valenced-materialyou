@@ -10,6 +10,25 @@ interface Seen {
 }
 
 const MaxNames = 300
+// android cuts long clipboard text off, so long output is copied in pages
+const PageSize = 12_000
+
+let output = ''
+
+function copy(text: string, page = 1) {
+	output = text
+	const pages = Math.max(Math.ceil(text.length / PageSize), 1)
+	const index = Math.min(Math.max(page, 1), pages)
+	Clipboard.setString(text.slice((index - 1) * PageSize, index * PageSize))
+	return pages > 1
+		? `Copied page ${index} of ${pages}. Run MaterialExpressiveInspector.page(${index + 1}) for the next`
+		: 'Copied'
+}
+
+/** Copies another page of the last output. */
+function page(index: number) {
+	return copy(output, index)
+}
 const MaxProps = 10
 
 // react native, navigation and animation building blocks, which every screen is made of
@@ -89,8 +108,7 @@ async function stop() {
 		)
 	seen = undefined
 
-	Clipboard.setString(components.join('\n'))
-	return `Copied ${components.length} components. Run MaterialExpressiveInspector.views() for the native views`
+	return `${copy(components.join('\n'))} (${components.length} components). MaterialExpressiveInspector.views() copies the native views`
 }
 
 /** Copies the native views of the open screen that have an id or a background. */
@@ -99,11 +117,10 @@ async function views() {
 	const lines = dump
 		.split('\n')
 		.filter(line => line.includes('#') || line.includes(' bg='))
-	Clipboard.setString(lines.join('\n'))
-	return `Copied ${lines.length} views`
+	return `${copy(lines.join('\n'))} (${lines.length} views)`
 }
 
-export const Inspector = { start, stop, views }
+export const Inspector = { start, stop, views, page }
 
 declare module '@valenced/modules/native' {
 	interface NativeMethods {

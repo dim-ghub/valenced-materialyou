@@ -20,12 +20,20 @@ theme is active. Pair it with the Material You theme and the System font pack.
 - M3 Expressive slider with a tall handle and a stop at the end
 - Chat avatars clipped to M3's cookie shape (Android 13 and later)
 - M3 floating action buttons
+- Every button as a pill
+- Chat header actions grouped in a tonal pill, and a pill-shaped chat bar
+- Bigger, bolder screen titles
+- DMs as rounded cards
+- The selected tab on a pill
+- Servers as circles, the selected one as a rounded square
+- Segmented action sheet lists
 
 ### Inspector
 
 To see which Discord components and native views make up a screen, run
 `MaterialExpressiveInspector.start()` in Developer Kit's Eval JS, open the screen, then run
-`MaterialExpressiveInspector.stop()` to copy the components. `MaterialExpressiveInspector.views()` copies the native views.
+`MaterialExpressiveInspector.stop()` to copy the components. `MaterialExpressiveInspector.views()` copies the native views. Long output is copied in pages,
+next ones with `MaterialExpressiveInspector.page(2)` and so on.
 
 Restart Discord after turning it on or off.
 

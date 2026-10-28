@@ -1,11 +1,20 @@
 import { getModules } from '@valenced/modules/finders'
-import { withProps } from '@valenced/modules/finders/filters'
+import { withName, withProps } from '@valenced/modules/finders/filters'
 import { forwardRef } from 'react'
 import { M3Radio, M3Switch } from './controls'
 import { M3Fab } from './fab'
 import { segmented } from './groups'
 import { Inspector } from './inspector'
 import { AccentTitle, tonalIcon } from './rows'
+import {
+	cardRow,
+	largeTitle,
+	pillButton,
+	pillChatInput,
+	pillTab,
+	shapedGuild,
+	tonalActions,
+} from './screens'
 import { M3Slider } from './slider'
 import type { ComponentType } from 'react'
 
@@ -37,6 +46,21 @@ function replaceExport(
 		exports[name] = original
 	})
 }
+
+/** Discord components found by name, each the default export of its own module. */
+const ByName: [name: string, wrap: (original: any) => ComponentType<any>][] = [
+	['BaseButton', pillButton],
+	['BaseTextButton', pillButton],
+	['PrivateChannelButtons', tonalActions],
+	['ChannelActionButtons', tonalActions],
+	['FloatingChatInputContainer', pillChatInput],
+	['LeftAlignedHeaderTitle', largeTitle],
+	['GenericHeaderTitle', largeTitle],
+	['MessagesItemChannelBase', cardRow],
+	['TabItem', pillTab],
+	['ActionSheetRowGroup', segmented],
+	['GuildsBarAnimatedItemWrapper', shapedGuild],
+]
 
 export default plugin({
 	preInit({ cleanup, plugin: self }) {
@@ -143,6 +167,19 @@ export default plugin({
 				exports =>
 					replaceExport(exports, 'FloatingActionButton', () => M3Fab, restores),
 				{ max: 4 },
+			),
+			...ByName.map(([name, wrap]) =>
+				getModules(
+					withName(name),
+					exports => {
+						const module = exports as unknown as Exports
+						if (
+							(module.default as { name?: string } | undefined)?.name === name
+						)
+							replaceExport(module, 'default', wrap, restores)
+					},
+					{ returnNamespace: true },
+				),
 			),
 			// the newer row group, used by the main settings list
 			getModules(
