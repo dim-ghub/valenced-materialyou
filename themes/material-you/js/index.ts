@@ -1,6 +1,5 @@
 /// <reference types="@valenced/themes-api" />
 
-import { Tokens } from '@valenced/discord/common/tokens'
 import { callNativeMethodSync } from '@valenced/modules/native'
 import { AppState } from 'react-native'
 import iconSymbols from '../icons.json'
@@ -223,36 +222,6 @@ const TranslucentSemanticRoles: Record<string, [keyof Roles, number]> = {
 
 const NeutralRaw = /^(PRIMARY|NEUTRAL)_\d+$/
 const BrandRaw = /^(BRAND|BLURPLE)_\d+$/
-// grays from families not named above
-const MaxGrayChroma = 24
-
-function isGray(hex: string) {
-	const rgb = parseHex(hex)
-	return Math.max(...rgb) - Math.min(...rgb) <= MaxGrayChroma
-}
-
-interface SemanticDefinition {
-	raw?: string
-	opacity?: number
-}
-
-/** Discord's own definition of a semantic color for a base, a raw color name and an opacity. */
-function definitionOf(name: string, base: ThemeBase) {
-	const definitions = (
-		Tokens.SemanticColor as Record<
-			string,
-			Record<string, SemanticDefinition | undefined> | undefined
-		>
-	)[name]
-	const definition = definitions?.[base] ?? definitions?.[base.toUpperCase()]
-	return typeof definition?.raw === 'string' ? definition : undefined
-}
-
-function withOpacity(hex: string, opacity = 1) {
-	if (opacity >= 1) return hex
-	const alpha = hex.length === 9 ? Number.parseInt(hex.slice(7), 16) / 255 : 1
-	return withAlpha(hex.slice(0, 7), alpha * opacity)
-}
 
 const Bases: ThemeBase[] = ['dark', 'darker', 'midnight', 'light']
 
@@ -271,13 +240,12 @@ function buildColors(
 	// swap discord's grays/blurple for system colors of the same tone
 	const raw: Record<string, string> = {}
 	for (const [name, value] of Object.entries(discord.raw)) {
-		if (!/^#[0-9a-f]{6}/i.test(value)) continue
-		const palette = BrandRaw.test(name)
-			? 'accent1'
-			: NeutralRaw.test(name) || isGray(value)
-				? variant.surfaces
+		const palette = NeutralRaw.test(name)
+			? variant.surfaces
+			: BrandRaw.test(name)
+				? 'accent1'
 				: undefined
-		if (!palette) continue
+		if (!palette || !/^#[0-9a-f]{6}/i.test(value)) continue
 
 		raw[name] = at(p[palette], toneOf(parseHex(value))) + value.slice(7)
 	}
@@ -286,14 +254,6 @@ function buildColors(
 	for (const base of Bases) {
 		const roles = rolesOf(base, p)
 		const colors: Record<string, string> = {}
-
-		// every semantic color, so native views that only read semantic colors match too
-		for (const name of Object.keys(Tokens.SemanticColor ?? {})) {
-			const definition = definitionOf(name, base)
-			const value =
-				definition && (raw[definition.raw!] ?? discord.raw[definition.raw!])
-			if (value) colors[name] = withOpacity(value, definition.opacity)
-		}
 
 		for (const [role, names] of Object.entries(SemanticRoles))
 			for (const name of names!) colors[name] = roles[role as keyof Roles]
