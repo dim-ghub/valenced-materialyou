@@ -3,6 +3,8 @@ import { withProps } from '@valenced/modules/finders/filters'
 import { forwardRef } from 'react'
 import { M3Radio, M3Switch } from './controls'
 import { segmented } from './groups'
+import { AccentTitle, tonalIcon } from './rows'
+import { M3Slider } from './slider'
 import type { ComponentType } from 'react'
 
 type Radii = Record<string, number>
@@ -87,6 +89,37 @@ export default plugin({
 					replaceExport(exports, 'FormSwitch', () => M3Switch, restores),
 				// the design barrel and the module defining it
 				{ max: 4 },
+			),
+			getModules(
+				withProps<Exports>('TableRowGroupTitle'),
+				exports =>
+					replaceExport(
+						exports,
+						'TableRowGroupTitle',
+						() => AccentTitle,
+						restores,
+					),
+				{ max: 4 },
+			),
+			getModules(
+				withProps<Exports>('TableRowIcon'),
+				exports => replaceExport(exports, 'TableRowIcon', tonalIcon, restores),
+				{ max: 4 },
+			),
+			// rows also reach their icon through TableRow.Icon
+			getModules(
+				withProps<{ TableRow: { Icon?: ComponentType<any> } }>('TableRow'),
+				({ TableRow }) => {
+					const original = TableRow.Icon
+					if (!original) return
+					TableRow.Icon = tonalIcon(original)
+					restores.push(() => {
+						TableRow.Icon = original
+					})
+				},
+			),
+			getModules(withProps<Exports>('Slider', 'TableRow'), exports =>
+				replaceExport(exports, 'Slider', () => M3Slider, restores),
 			),
 			getModules(
 				withProps<Exports>('FormRadio'),

@@ -1,6 +1,7 @@
 import { Design } from '@valenced/discord/design'
 import { Children, isValidElement } from 'react'
 import { StyleSheet, View } from 'react-native'
+import { AccentTitle } from './rows'
 import type { ComponentType, ReactNode } from 'react'
 
 interface GroupProps {
@@ -24,11 +25,9 @@ export function segmented(Group: ComponentType<GroupProps>) {
 		const { title, description, children, ...rest } = props
 		const rows = Children.toArray(children).filter(isValidElement)
 
-		// nothing to split
-		if (rows.length < 2) return <Group {...props} />
+		if (!rows.length) return <Group {...props} />
 
-		const { TableRowGroupTitle, Text } = Design as unknown as {
-			TableRowGroupTitle: ComponentType<{ title: string }>
+		const { Text } = Design as unknown as {
 			Text: ComponentType<{
 				variant: string
 				color: string
@@ -39,7 +38,7 @@ export function segmented(Group: ComponentType<GroupProps>) {
 
 		return (
 			<View>
-				{title ? <TableRowGroupTitle title={title} /> : null}
+				{title ? <AccentTitle title={title} /> : null}
 				<View style={styles.segments}>
 					{rows.map((row, i) => (
 						<View

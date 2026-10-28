@@ -15,6 +15,9 @@ theme is active. Pair it with the Material You theme and the System font pack.
 - Pill buttons
 - Settings and action sheet lists split into segments with large outer and small inner corners
 - M3 switches and radio buttons
+- Section titles in the accent color
+- Row icons in tonal circles, red for destructive rows
+- M3 Expressive slider with a tall handle and a stop at the end
 
 Restart Discord after turning it on or off.
 

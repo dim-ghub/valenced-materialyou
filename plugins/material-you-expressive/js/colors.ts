@@ -16,8 +16,24 @@ export function color(names: string[], fallback: string) {
 	return fallback
 }
 
+/** Sets the alpha of a `#rrggbb` or `#rrggbbaa` color. */
+export function withAlpha(hex: string, alpha: number) {
+	if (!/^#[0-9a-f]{6}([0-9a-f]{2})?$/i.test(hex)) return hex
+	return (
+		hex.slice(0, 7) +
+		Math.round(alpha * 255)
+			.toString(16)
+			.padStart(2, '0')
+	)
+}
+
 export const Roles = {
 	primary: () => color(['BACKGROUND_BRAND'], '#80d5c8'),
+	danger: () =>
+		color(
+			['TEXT_FEEDBACK_CRITICAL', 'TEXT_DANGER', 'STATUS_DANGER'],
+			'#ffb4ab',
+		),
 	// a dark thumb on a light track in dark themes, and the other way around in light ones
 	onPrimary: () =>
 		color(['BACKGROUND_BASE_LOWEST', 'BACKGROUND_TERTIARY'], '#00382f'),
