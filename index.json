@@ -3,6 +3,30 @@
   "name": "dim's Valenced plugins",
   "description": "Material You theme and TapTap for Valenced.",
   "plugins": {
+    "dim.material-you-expressive": {
+      "name": "Material You Expressive",
+      "description": "Restyles Discord's components after Material 3 Expressive: rounder shapes, pill buttons, segmented lists, M3 switches and radios.",
+      "author": "dim (https://github.com/dim-ghub \"GitHub\") (https://dim.contact \"Website\")",
+      "icon": "PaintPaletteIcon",
+      "channels": {
+        "latest": "0.1.0"
+      },
+      "versions": {
+        "0.1.0": {
+          "url": "https://dim-ghub.github.io/valenced-materialyou/pool/dim.material-you-expressive@0.1.0.zip",
+          "sha256": "5c229123874a43c4797ab3f9b6c09dc74194e91c091577797c47bf982afa9c79",
+          "size": 2497,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": ">=352.2"
+            }
+          }
+        }
+      }
+    },
     "dim.material-you": {
       "name": "Material You",
       "description": "Follows your Android system Material You colors automatically, with system emoji, system font and Material Symbols icons.",
