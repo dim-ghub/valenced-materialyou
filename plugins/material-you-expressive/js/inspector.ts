@@ -9,7 +9,12 @@ interface Seen {
 	props: Set<string>
 }
 
-const MaxNames = 500
+const MaxNames = 300
+const MaxProps = 10
+
+// react native, navigation and animation building blocks, which every screen is made of
+const Ignored =
+	/^(View|Text|Image|FastImage|ScrollView|Pressable.*|PressableBase|PressableOpacity|Animated.*|AnimatedComponent.*|REAWorkaroundView|Wrap|Component|Screen.*|InnerScreen|ReanimatedScreenWrapper|ReanimatedNativeStackScreen|Freeze|Suspender|DelayedFreeze|GestureDetector|NavigationProvider|SceneView|StaticContainer|NativeStackView|EnsureSingleNavigator|_default|TransitionGroup|TransitionItem|PortalToNativeView|Layer|LayerScope|FrameSizeProvider|Icon|BaseIconImage|ClipView|Anonymous|Fragment)$|(Context|Provider)$/
 
 let seen: Map<string, Seen> | undefined
 const unpatches: (() => void)[] = []
@@ -35,14 +40,15 @@ function nameOf(type: unknown): string | undefined {
 
 function record([type, props]: unknown[]) {
 	const name = nameOf(type)
-	if (!name || !seen) return
+	if (!name || !seen || Ignored.test(name)) return
 
 	let entry = seen.get(name)
 	if (!entry) seen.set(name, (entry = { count: 0, props: new Set() }))
 	entry.count++
 	if (props && typeof props === 'object')
 		for (const key of Object.keys(props))
-			if (key !== 'children') entry.props.add(key)
+			if (key !== 'children' && entry.props.size < MaxProps)
+				entry.props.add(key)
 }
 
 /** Starts recording which components render, until {@link stop}. */
@@ -83,20 +89,21 @@ async function stop() {
 		)
 	seen = undefined
 
-	let views = ''
-	try {
-		views = (await callNativeMethod('dim.expressive.dumpViews', [])) ?? ''
-	} catch (e) {
-		views = `failed: ${e}`
-	}
-
-	Clipboard.setString(
-		`# Components\n${components.join('\n')}\n\n# Native views\n${views}`,
-	)
-	return `Copied ${components.length} components and ${views.split('\n').length} views`
+	Clipboard.setString(components.join('\n'))
+	return `Copied ${components.length} components. Run MaterialExpressiveInspector.views() for the native views`
 }
 
-export const Inspector = { start, stop }
+/** Copies the native views of the open screen that have an id or a background. */
+async function views() {
+	const dump = (await callNativeMethod('dim.expressive.dumpViews', [])) ?? ''
+	const lines = dump
+		.split('\n')
+		.filter(line => line.includes('#') || line.includes(' bg='))
+	Clipboard.setString(lines.join('\n'))
+	return `Copied ${lines.length} views`
+}
+
+export const Inspector = { start, stop, views }
 
 declare module '@valenced/modules/native' {
 	interface NativeMethods {

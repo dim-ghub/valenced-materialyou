@@ -25,7 +25,7 @@ theme is active. Pair it with the Material You theme and the System font pack.
 
 To see which Discord components and native views make up a screen, run
 `MaterialExpressiveInspector.start()` in Developer Kit's Eval JS, open the screen, then run
-`MaterialExpressiveInspector.stop()`. It copies both lists to the clipboard.
+`MaterialExpressiveInspector.stop()` to copy the components. `MaterialExpressiveInspector.views()` copies the native views.
 
 Restart Discord after turning it on or off.
 
