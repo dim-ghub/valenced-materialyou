@@ -1,3 +1,4 @@
+import { Design } from '@valenced/discord/design'
 import { Clipboard } from '@valenced/externals/react-native-clipboard'
 import { lookupModule } from '@valenced/modules/finders'
 import { withProps } from '@valenced/modules/finders/filters'
@@ -112,12 +113,32 @@ async function stop() {
 }
 
 /** Copies the native views of the open screen that have an id or a background. */
-async function views() {
+async function captureViews() {
 	const dump = (await callNativeMethod('dim.expressive.dumpViews', [])) ?? ''
 	const lines = dump
 		.split('\n')
 		.filter(line => line.includes('#') || line.includes(' bg='))
 	return `${copy(lines.join('\n'))} (${lines.length} views)`
+}
+
+/**
+ * Captures the native views after {@link delay} seconds, so there's time to switch to the screen.
+ * A toast says when it's done.
+ */
+function views(delay = 10) {
+	setTimeout(() => {
+		captureViews().then(
+			result => toast(result),
+			error => toast(`Capture failed: ${error}`),
+		)
+	}, delay * 1000)
+	return `Capturing in ${delay}s, switch to the screen now`
+}
+
+function toast(text: string) {
+	try {
+		;(Design as unknown as { showToast(text: string): void }).showToast(text)
+	} catch {}
 }
 
 export const Inspector = { start, stop, views, page }
