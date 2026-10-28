@@ -118,8 +118,18 @@ export default plugin({
 					})
 				},
 			),
-			getModules(withProps<Exports>('Slider', 'TableRow'), exports =>
-				replaceExport(exports, 'Slider', () => M3Slider, restores),
+			// discord's design modules also export each component's `...Props`, which tells them
+			// apart from other libraries exporting the same name
+			getModules(
+				withProps<Exports>('Slider', 'SliderProps'),
+				exports => replaceExport(exports, 'Slider', () => M3Slider, restores),
+				{ max: 4 },
+			),
+			// the newer row group, used by the main settings list
+			getModules(
+				withProps<Exports>('RowGroup', 'RowGroupProps'),
+				exports => replaceExport(exports, 'RowGroup', segmented, restores),
+				{ max: 4 },
 			),
 			getModules(
 				withProps<Exports>('FormRadio'),
