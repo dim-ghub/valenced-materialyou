@@ -72,7 +72,7 @@
       "author": "dim (https://github.com/dim-ghub \"GitHub\") (https://dim.contact \"Website\")",
       "icon": "PaintPaletteIcon",
       "channels": {
-        "latest": "1.0.8"
+        "latest": "1.0.9"
       },
       "versions": {
         "1.0.0": {
@@ -207,6 +207,22 @@
           "url": "https://dim-ghub.github.io/valenced-materialyou/pool/dim.material-you@1.0.8.zip",
           "sha256": "54a2edbdcbbd2ec128914828e3f29356a8356182206e2589a435dd1bd45f0628",
           "size": 499529,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            },
+            "valenced.api.themes": {
+              "version": "*"
+            }
+          }
+        },
+        "1.0.9": {
+          "url": "https://dim-ghub.github.io/valenced-materialyou/pool/dim.material-you@1.0.9.zip",
+          "sha256": "4455ba223c1ba46ee8aecbbfdabdad53936ef35aa3c969065e241bbf4308a87c",
+          "size": 499754,
           "dependencies": {
             "valenced.api": {
               "version": ">=1 <2"
