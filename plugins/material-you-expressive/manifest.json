@@ -2,10 +2,10 @@
 	"format": 1,
 	"id": "dim.material-you-expressive",
 	"name": "Material You Expressive",
-	"description": "Restyles Discord's components after Material 3 Expressive: rounder shapes, pill buttons, segmented lists, M3 switches and radios.",
+	"description": "Restyles Discord after Material 3 Expressive: rounder shapes, pill buttons, segmented lists, M3 controls and shaped avatars.",
 	"icon": "PaintPaletteIcon",
 	"author": "dim (https://github.com/dim-ghub \"GitHub\") (https://dim.contact \"Website\")",
-	"version": "0.2.1",
+	"version": "0.3.0",
 	"dependencies": {
 		"valenced.api": {
 			"version": ">=1 <2"
@@ -15,6 +15,10 @@
 		}
 	},
 	"dist": {
-		"script": "index.js"
+		"script": "index.js",
+		"android": {
+			"path": "plugin.jar",
+			"class": "dim.expressive.MaterialYouExpressive"
+		}
 	}
 }

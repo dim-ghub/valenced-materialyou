@@ -2,7 +2,9 @@ import { getModules } from '@valenced/modules/finders'
 import { withProps } from '@valenced/modules/finders/filters'
 import { forwardRef } from 'react'
 import { M3Radio, M3Switch } from './controls'
+import { M3Fab } from './fab'
 import { segmented } from './groups'
+import { Inspector } from './inspector'
 import { AccentTitle, tonalIcon } from './rows'
 import { M3Slider } from './slider'
 import type { ComponentType } from 'react'
@@ -57,6 +59,17 @@ export default plugin({
 				},
 			),
 		)
+	},
+	start({ cleanup }) {
+		// run MaterialExpressiveInspector.start() from Eval JS
+		const global = globalThis as {
+			MaterialExpressiveInspector?: typeof Inspector
+		}
+		global.MaterialExpressiveInspector = Inspector
+		cleanup(() => {
+			Inspector.stop()
+			delete global.MaterialExpressiveInspector
+		})
 	},
 	init({ cleanup }) {
 		const restores: (() => void)[] = []
@@ -123,6 +136,12 @@ export default plugin({
 			getModules(
 				withProps<Exports>('Slider', 'SliderProps'),
 				exports => replaceExport(exports, 'Slider', () => M3Slider, restores),
+				{ max: 4 },
+			),
+			getModules(
+				withProps<Exports>('FloatingActionButton', 'FloatingActionButtonProps'),
+				exports =>
+					replaceExport(exports, 'FloatingActionButton', () => M3Fab, restores),
 				{ max: 4 },
 			),
 			// the newer row group, used by the main settings list

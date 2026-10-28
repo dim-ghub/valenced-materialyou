@@ -18,6 +18,14 @@ theme is active. Pair it with the Material You theme and the System font pack.
 - Section titles in the accent color
 - Row icons in tonal circles, red for destructive rows
 - M3 Expressive slider with a tall handle and a stop at the end
+- Chat avatars clipped to M3's cookie shape (Android 13 and later)
+- M3 floating action buttons
+
+### Inspector
+
+To see which Discord components and native views make up a screen, run
+`MaterialExpressiveInspector.start()` in Developer Kit's Eval JS, open the screen, then run
+`MaterialExpressiveInspector.stop()`. It copies both lists to the clipboard.
 
 Restart Discord after turning it on or off.
 
