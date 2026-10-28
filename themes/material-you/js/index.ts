@@ -1,5 +1,6 @@
 /// <reference types="@valenced/themes-api" />
 
+import { Tokens } from '@valenced/discord/common/tokens'
 import { callNativeMethodSync } from '@valenced/modules/native'
 import { AppState } from 'react-native'
 import iconSymbols from '../icons.json'
@@ -223,6 +224,34 @@ const TranslucentSemanticRoles: Record<string, [keyof Roles, number]> = {
 const NeutralRaw = /^(PRIMARY|NEUTRAL)_\d+$/
 const BrandRaw = /^(BRAND|BLURPLE)_\d+$/
 
+// colors of the chat bar and other bars, which keep discord's grays unless set directly
+const BarColors =
+	/^(MOBILE_|CHAT_|INPUT_|REDESIGN_CHAT_|REDESIGN_INPUT_|SHARE_CHAT_|TAB_BAR_|ANDROID_NAVIGATION_)/
+
+interface SemanticDefinition {
+	raw: string
+	opacity?: number
+}
+
+/** Discord's definition of a semantic color for a base: a raw color and an opacity. */
+function definitionOf(name: string, base: ThemeBase) {
+	const definition = (
+		Tokens.SemanticColor as Record<
+			string,
+			Partial<Record<ThemeBase, Partial<SemanticDefinition>>> | undefined
+		>
+	)[name]?.[base]
+	return typeof definition?.raw === 'string'
+		? (definition as SemanticDefinition)
+		: undefined
+}
+
+function withOpacity(hex: string, opacity = 1) {
+	if (opacity >= 1) return hex
+	const alpha = hex.length === 9 ? Number.parseInt(hex.slice(7), 16) / 255 : 1
+	return withAlpha(hex.slice(0, 7), alpha * opacity)
+}
+
 const Bases: ThemeBase[] = ['dark', 'darker', 'midnight', 'light']
 
 function buildColors(
@@ -254,6 +283,15 @@ function buildColors(
 	for (const base of Bases) {
 		const roles = rolesOf(base, p)
 		const colors: Record<string, string> = {}
+
+		// discord's own definitions, with the re-toned grays
+		for (const name of Object.keys(Tokens.SemanticColor ?? {})) {
+			if (!BarColors.test(name)) continue
+			const definition = definitionOf(name, base)
+			const value =
+				definition && (raw[definition.raw] ?? discord.raw[definition.raw])
+			if (value) colors[name] = withOpacity(value, definition.opacity)
+		}
 
 		for (const [role, names] of Object.entries(SemanticRoles))
 			for (const name of names!) colors[name] = roles[role as keyof Roles]
