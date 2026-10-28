@@ -3,7 +3,20 @@
 | Plugin | What it does |
 | --- | --- |
 | [Material You](#material-you) | Colors Discord with your Android Material You palette |
+| [Material You Expressive](#material-you-expressive) | Restyles Discord's components after Material 3 Expressive |
 | [TapTap](#taptap) | Double tap your own message to edit it, or someone else's to reply |
+
+## Material You Expressive
+
+Restyles Discord's own design components after Material 3 Expressive, on top of whatever color
+theme is active. Pair it with the Material You theme and the System font pack.
+
+- Rounder corners everywhere Discord uses its shared corner sizes
+- Pill buttons
+- Settings and action sheet lists split into segments with large outer and small inner corners
+- M3 switches and radio buttons
+
+Restart Discord after turning it on or off.
 
 ## TapTap
 
