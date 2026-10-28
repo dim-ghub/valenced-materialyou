@@ -4,7 +4,6 @@
 | --- | --- |
 | [Material You](#material-you) | Colors Discord with your Android Material You palette |
 | [TapTap](#taptap) | Double tap your own message to edit it, or someone else's to reply |
-| [Chat Bubbles](#chat-bubbles) | Shows messages in bubbles, your own in your accent color |
 
 ## TapTap
 
@@ -13,12 +12,6 @@ to reply to them. Ephemeral and system messages are skipped.
 
 The native half (`plugins/taptap/src`) watches touches on Discord's message views and spots double
 taps; the JS half starts the edit or the reply with Discord's own actions.
-
-## Chat Bubbles
-
-A take on Aliucord's Chat Bubbles. Each message gets a rounded bubble behind its name and content.
-Your own messages use your theme's brand color, everyone else's a raised surface color, so with
-Material You they follow your system palette.
 
 # Material You
 
